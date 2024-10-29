@@ -115,7 +115,6 @@ model caisse {
   stock_initial Int
   stock_final   Int?
   montant_total Int?
-  solde         Int?
 }
 
 model Profile {

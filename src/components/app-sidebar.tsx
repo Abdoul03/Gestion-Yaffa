@@ -37,7 +37,7 @@ const items = [
   },
   { title: "Transfert International", url: "/transInter", icon: FaTicketAlt },
   {
-    title: "Uvv D'abonnement",
+    title: "Uv D'abonnement",
     url: "/uvAbonnement",
     icon: FaCreativeCommonsSampling,
   },

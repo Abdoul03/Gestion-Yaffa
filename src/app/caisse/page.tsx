@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/db";
 import React from "react";
-// import Link from "next/link";
 import {
   Table,
   TableBody,
@@ -11,59 +10,92 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-// export default async function Page() {
-//   const caisses = await prisma.caisse.findMany();
-
-//   return (
-//     <>
-//       <h2 className="font-bold text-green-500 m-5">Caisse entreprise</h2>
-//       <ul>
-//         {caisses.map((caisse) => (
-//           <li key={caisse.id}>
-//             <Link href={`/caisse/${caisse.id}`}>{caisse.service}</Link>
-//           </li>
-//         ))}
-//       </ul>
-//     </>
-//   );
-// }
+import Link from "next/link";
+// import { Button } from "@/components/ui/button";
 
 export default async function Page() {
   const caisses = await prisma.caisse.findMany();
+
+  // Calcul du total des montants
+  const totalMontant = caisses.reduce(
+    (sum, caisse) => sum + (caisse.montant_total ?? 0),
+    0
+  );
+
   return (
-    <Table>
-      <TableCaption>La Caisse.</TableCaption>
-      <TableHeader>
-        <TableRow>
-          <TableHead className="w-[100px]">Date</TableHead>
-          <TableHead>Services</TableHead>
-          <TableHead>Stock Initial</TableHead>
-          <TableHead>Stock Final</TableHead>
-          <TableHead>Montant</TableHead>
-          <TableHead className="text-right">Solde</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {caisses.map((caisse) => (
-          <TableRow key={caisse.id}>
-            <TableCell className="font-medium">
-              {caisse.date.toLocaleDateString()}
-            </TableCell>
-            <TableCell>{caisse.service}</TableCell>
-            <TableCell>{caisse.stock_initial}</TableCell>
-            <TableCell>{caisse.stock_final}</TableCell>
-            <TableCell>{caisse.montant_total}</TableCell>
-            <TableCell className="text-right">{caisse.solde}</TableCell>
+    <div className="flex flex-col h-screen w-screen bg-gray-50 p-3">
+      <Table className="flex-grow bg-white shadow-md rounded-lg overflow-hidden w-full">
+        <TableCaption className="text-lg font-semibold text-gray-700 py-4">
+          La Caisse.
+        </TableCaption>
+        <TableHeader className="bg-gray-100 border-b">
+          <TableRow>
+            <TableHead className="p-4 text-left text-gray-600 font-semibold">
+              Date
+            </TableHead>
+            <TableHead className="p-4 text-left text-gray-600 font-semibold">
+              Services
+            </TableHead>
+            <TableHead className="p-4 text-left text-gray-600 font-semibold">
+              Stock Initial
+            </TableHead>
+            <TableHead className="p-4 text-left text-gray-600 font-semibold">
+              Stock Final
+            </TableHead>
+            <TableHead className="p-4 text-left text-gray-600 font-semibold">
+              Montant
+            </TableHead>
           </TableRow>
-        ))}
-      </TableBody>
-      <TableFooter>
-        <TableRow>
-          <TableCell colSpan={3}>Total</TableCell>
-          <TableCell className="text-right">{}</TableCell>
-        </TableRow>
-      </TableFooter>
-    </Table>
+        </TableHeader>
+        <TableBody>
+          {/* <Link href={`/caisse/${caisses}`}>clicke</Link> */}
+          {caisses.map((caisse) => (
+            <TableRow key={caisse.id} className="border-b hover:bg-gray-50">
+              <TableCell className="p-4 text-gray-700">
+                <Link href={`/caisse/${caisse.id}`} passHref>
+                  {caisse.date.toLocaleDateString()}
+                </Link>
+              </TableCell>
+              <TableCell className="p-4 text-gray-700">
+                <Link href={`/caisse/${caisse.id}`} passHref>
+                  {caisse.service}
+                </Link>
+              </TableCell>
+              <TableCell className="p-4 text-gray-700">
+                <Link href={`/caisse/${caisse.id}`} passHref>
+                  {caisse.stock_initial}
+                </Link>
+              </TableCell>
+              <TableCell className="p-4 text-gray-700">
+                <Link href={`/caisse/${caisse.id}`} passHref>
+                  {caisse.stock_final}
+                </Link>
+              </TableCell>
+              <TableCell className="p-4 text-gray-700">
+                <Link href={`/caisse/${caisse.id}`} passHref>
+                  {caisse.montant_total}
+                </Link>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+        <TableFooter className="bg-gray-100 border-t">
+          <TableRow>
+            <TableCell
+              colSpan={4}
+              className="p-4 text-right font-semibold text-gray-600"
+            >
+              Total
+            </TableCell>
+            <TableCell
+              colSpan={2}
+              className="p-4 text-right font-semibold text-gray-800"
+            >
+              {totalMontant}
+            </TableCell>
+          </TableRow>
+        </TableFooter>
+      </Table>
+    </div>
   );
 }
