@@ -1,0 +1,134 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+///// model ////////////
+enum nomService {
+  CANAL_PLUS
+  MALIVISION
+  WAVE
+  ORANGE_MONEY
+  MOBICASH
+  SAMA_MONEY
+  CREDIT_ORANGE
+  CREDIT_MALITEL
+  CREDIT_TELECEL
+  W_MG_RIA
+}
+
+enum transInter {
+  WESTERUNION
+  MONEYGRAM
+  RIA
+}
+
+enum uvTele {
+  CANALPlus
+  MALIVISION
+}
+
+model clientCanal {
+  id        Int      @id @default(autoincrement())
+  nom       String
+  prenom    String
+  telephone String   @unique
+  numAbonne BigInt   @unique
+  finAbonn  DateTime
+}
+
+model commissionDuMois {
+  id          Int        @id @default(autoincrement())
+  date        DateTime   @default(now())
+  mom_service nomService @default(ORANGE_MONEY) // Exemple de valeur par défaut
+  debit       Int
+  montant     Int
+  sold        Int
+}
+
+model creditEntreprise {
+  id              Int      @id @default(autoincrement())
+  date            DateTime @default(now())
+  nomClient       String
+  prenomClient    String
+  motif           String
+  montant         Int
+  montant_paye    Int?
+  montant_restant Int?
+  solde           Int?
+}
+
+model prepayee {
+  id              Int      @id @default(autoincrement())
+  date            DateTime @default(now())
+  nom_client      String
+  montant_initial Int
+  montant_depense Int?
+  montant_restant Int?
+}
+
+model serviceEntreprise {
+  id              Int        @id @default(autoincrement())
+  date            DateTime   @default(now())
+  mom_service     nomService @default(ORANGE_MONEY) // Exemple de valeur par défaut
+  solde_a_nouveau Int
+  montant_final   Int?
+  total           Int?
+}
+
+model transInternation {
+  id              Int        @id @default(autoincrement())
+  montant_initial Int
+  nom_service     transInter @default(WESTERUNION)
+  montant_trans   Int
+  montant_recus   Int
+  date_debut      DateTime
+  date_fin        DateTime?
+  soldes          Int?
+  Decouvert       Int?
+  credit          Int?
+  debit_caisse    Int?
+  debit_BNDA      Int?
+}
+
+model uvAbonnement {
+  id      Int      @id @default(autoincrement())
+  date    DateTime @default(now())
+  produit uvTele   @default(CANALPlus)
+  montant Int
+}
+
+model caisse {
+  id            Int        @id @default(autoincrement())
+  date          DateTime   @default(now())
+  service       nomService
+  stock_initial Int
+  stock_final   Int?
+  montant_total Int?
+  solde         Int?
+}
+
+model Profile {
+  id     Int     @id @default(autoincrement())
+  bio    String?
+  user   User    @relation(fields: [userId], references: [id])
+  userId Int     @unique
+}
+
+model User {
+  id      Int      @id @default(autoincrement())
+  email   String   @unique
+  nom     String?
+  prenom  String?
+  profile Profile?
+}
