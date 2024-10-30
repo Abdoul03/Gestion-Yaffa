@@ -42,8 +42,8 @@ model clientCanal {
   id        Int      @id @default(autoincrement())
   nom       String
   prenom    String
-  telephone String   @unique
-  numAbonne BigInt   @unique
+  telephone String?  @unique
+  numAbonne Int?     @unique
   finAbonn  DateTime
 }
 
