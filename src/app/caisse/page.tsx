@@ -1,6 +1,5 @@
-"use client";
-
-import React, { useState } from "react";
+import { prisma } from "@/lib/db";
+import React from "react";
 import {
   Table,
   TableBody,
@@ -13,62 +12,21 @@ import {
 } from "@/components/ui/table";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { deleteCaisse, editeCaisse } from "@/actions/actions";
-import { prisma } from "@/lib/db";
-import { $Enums } from "@prisma/client";
+import { createCaisse } from "@/actions/actions";
+import CaisseActions from "@/components/caisseAction";
 
-interface FormData {
-  service: string;
-  stock_initial: number;
-  stock_final: number | null;
-  montant_total: number | null;
-}
-
-// Fonction pour récupérer les données côté serveur
-export async function getServerSideProps() {
+export default async function Page() {
   const caisses = await prisma.caisse.findMany();
-  return { props: { caisses } };
-}
 
-export default function Page({ caisses }) {
   // Calcul du total des montants
   const totalMontant = caisses.reduce(
     (sum, caisse) => sum + (caisse.montant_total ?? 0),
     0
   );
 
-  // État pour stocker les données du formulaire d'édition
-  const [formData, setFormData] = useState<FormData>({
-    montant_total: 0,
-    service: "",
-    stock_initial: 0,
-    stock_final: null,
-  });
-
-  // Fonction de gestion de la modification
-  const handleEditClick = (caisse: {
-    id: number;
-    date: Date;
-    service: $Enums.nomService;
-    stock_initial: number;
-    stock_final: number | null;
-    montant_total: number | null;
-  }) => {
-    // Remplir les données actuelles dans formData pour que l'utilisateur puisse les modifier
-    setFormData({
-      service: caisse.service,
-      stock_initial: caisse.stock_initial,
-      stock_final: caisse.stock_final,
-      montant_total: caisse.montant_total,
-    });
-  };
-
   return (
     <div className="flex flex-col h-screen w-screen bg-gray-50 p-3">
       <Table className="flex-grow bg-white shadow-md rounded-lg overflow-hidden w-full">
-        <TableCaption className="text-lg font-semibold text-gray-700 py-4">
-          La Caisse.
-        </TableCaption>
         <TableHeader className="bg-gray-100 border-b">
           <TableRow>
             <TableHead className="p-4 text-left text-gray-600 font-semibold">
@@ -96,7 +54,7 @@ export default function Page({ caisses }) {
             <TableRow key={caisse.id} className="border-b hover:bg-gray-50">
               <TableCell className="p-4 text-gray-700">
                 <Link href={`/caisse/${caisse.id}`} passHref>
-                  {new Date(caisse.date).toLocaleDateString()}
+                  {caisse.date.toLocaleDateString()}
                 </Link>
               </TableCell>
               <TableCell className="p-4 text-gray-700">
@@ -119,13 +77,8 @@ export default function Page({ caisses }) {
                   {caisse.montant_total}
                 </Link>
               </TableCell>
-              <TableCell className="p-4 text-gray-700 flex gap-2">
-                <Button onClick={() => deleteCaisse(caisse.id)}>
-                  Supprimer
-                </Button>
-                <Button onClick={() => handleEditClick(caisse)}>
-                  Modifier
-                </Button>
+              <TableCell className="p-4 text-gray-700">
+                <CaisseActions caisseId={caisse.id} />
               </TableCell>
             </TableRow>
           ))}
@@ -134,7 +87,7 @@ export default function Page({ caisses }) {
           <TableRow>
             <TableCell
               colSpan={4}
-              className="p-4 text-right font-semibold text-gray-600"
+              className="p-4 text-right text-gray-600 font-bold"
             >
               Total
             </TableCell>
@@ -148,49 +101,74 @@ export default function Page({ caisses }) {
         </TableFooter>
       </Table>
 
-      {/* Formulaire de modification */}
-      <div className="p-4 bg-white shadow-md rounded-lg mt-4">
-        <h2 className="text-lg font-semibold mb-4">Modifier la Caisse</h2>
-        <label className="block text-gray-700">Service:</label>
-        <input
-          type="text"
-          value={formData.service}
-          onChange={(e) =>
-            setFormData({ ...formData, service: e.target.value })
-          }
-          className="mb-4 p-2 border rounded w-full"
-        />
-        <label className="block text-gray-700">Montant Total:</label>
-        <input
-          type="number"
-          value={formData.montant_total || ""}
-          onChange={(e) =>
-            setFormData({ ...formData, montant_total: Number(e.target.value) })
-          }
-          className="mb-4 p-2 border rounded w-full"
-        />
-        <label className="block text-gray-700">Stock Initial:</label>
-        <input
-          type="text"
-          value={formData.stock_initial}
-          onChange={(e) =>
-            setFormData({ ...formData, stock_initial: Number(e.target.value) })
-          }
-          className="mb-4 p-2 border rounded w-full"
-        />
-        <label className="block text-gray-700">Stock final:</label>
-        <input
-          type="text"
-          value={formData.stock_final || ""}
-          onChange={(e) =>
-            setFormData({ ...formData, stock_final: Number(e.target.value) })
-          }
-          className="mb-4 p-2 border rounded w-full"
-        />
-        <Button onClick={() => editeCaisse(formData, formData.id)}>
-          Enregistrer
-        </Button>
-      </div>
+      {/* formulaire de creation d'une caisse */}
+      <form
+        action={createCaisse}
+        className="bg-white p-6 mt-8 rounded-lg shadow-md space-y-4"
+      >
+        <div>
+          <label htmlFor="service" className="block text-gray-700 font-medium">
+            Service:
+          </label>
+          <select
+            name="service"
+            className="mt-2 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">Select a service</option>
+            <option value="CANAL_PLUS">CANAL PLUS</option>
+            <option value="MALIVISION">MALIVISION</option>
+            <option value="WAVE">WAVE</option>
+            <option value="ORANGE_MONEY">ORANGE MONEY</option>
+            <option value="MOBICASH">MOBICASH</option>
+            <option value="SAMA_MONEY">SAMA MONEY</option>
+            <option value="CREDIT_MALITEL">CREDIT MALITEL</option>
+            <option value="CREDIT_ORANGE">CREDIT ORANGE</option>
+            <option value="CREDIT_TELECEL">CREDIT ORANGE</option>
+            <option value="W_MG_RIA">CW_MG_RIA</option>
+            {/* Ajouter d'autres options selon les valeurs de "nomService" */}
+          </select>
+        </div>
+        <div>
+          <label
+            htmlFor="stock_initial"
+            className="block text-gray-700 font-medium"
+          >
+            Stock Initial:
+          </label>
+          <input
+            type="number"
+            name="stock_initial"
+            className="mt-2 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <div>
+          <label
+            htmlFor="stock_final"
+            className="block text-gray-700 font-medium"
+          >
+            Stock Final:
+          </label>
+          <input
+            type="number"
+            name="stock_final"
+            className="mt-2 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <div>
+          <label
+            htmlFor="montant_total"
+            className="block text-gray-700 font-medium"
+          >
+            Montant Total:
+          </label>
+          <input
+            type="number"
+            name="montant_total"
+            className="mt-2 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <Button type="submit">Créer la Caisse</Button>
+      </form>
     </div>
   );
 }

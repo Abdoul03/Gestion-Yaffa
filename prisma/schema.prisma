@@ -43,7 +43,7 @@ model clientCanal {
   nom       String
   prenom    String
   telephone String?  @unique
-  numAbonne Int?     @unique
+  numAbonne BigInt?  @unique
   finAbonn  DateTime
 }
 
@@ -65,7 +65,6 @@ model creditEntreprise {
   montant         Int
   montant_paye    Int?
   montant_restant Int?
-  solde           Int?
 }
 
 model prepayee {
@@ -83,15 +82,14 @@ model serviceEntreprise {
   mom_service     nomService @default(ORANGE_MONEY) // Exemple de valeur par défaut
   solde_a_nouveau Int
   montant_final   Int?
-  total           Int?
 }
 
 model transInternation {
   id              Int        @id @default(autoincrement())
   montant_initial Int
   nom_service     transInter @default(WESTERUNION)
-  montant_trans   Int
-  montant_recus   Int
+  montant_trans   Int?
+  montant_recus   Int?
   date_debut      DateTime
   date_fin        DateTime?
   soldes          Int?

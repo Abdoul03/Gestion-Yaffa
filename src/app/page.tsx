@@ -1,13 +1,8 @@
-// import Header from "@/components/Header";
-
 "use client";
 // import dynamic from "next/dynamic";
 import React from "react";
-// import ChartOne from "../Charts/ChartOne";
-// import ChartTwo from "../Charts/ChartTwo";
-// import ChatCard from "../Chat/ChatCard";
-// import TableOne from "../Tables/TableOne";
 import CardDataStats from "@/components/CardDataStats";
+import TableOne from "@/components/TableOne";
 
 // const MapOne = dynamic(() => import("@/components/Maps/MapOne"), {
 //   ssr: false,
@@ -20,7 +15,7 @@ import CardDataStats from "@/components/CardDataStats";
 const Home = () => {
   return (
     <>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5 m-5">
         <CardDataStats title="Total views" total="$3.456K" rate="0.43%" levelUp>
           <svg
             className="fill-primary dark:fill-white"
@@ -112,7 +107,9 @@ const Home = () => {
         {/* <ChartTwo /> */}
         {/* <ChartThree /> */}
         {/* <MapOne /> */}
-        <div className="col-span-12 xl:col-span-8">{/* <TableOne /> */}</div>
+        <div className="col-span-12 xl:col-span-8">
+          <TableOne />
+        </div>
         {/* <ChatCard /> */}
       </div>
     </>

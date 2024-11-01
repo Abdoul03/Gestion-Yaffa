@@ -28,7 +28,7 @@ const items = [
   { title: "Caisse", url: "/caisse", icon: FaArchive },
   { title: "Client Canal +", url: "/clientCanal", icon: FaUsers },
   { title: "Mes commissions", url: "/commission", icon: FaCoins },
-  { title: "Credit Entreprise", url: "/CreditEntreprise", icon: FaWallet },
+  { title: "Credit Entreprise", url: "/creditEntreprise", icon: FaWallet },
   { title: "Prepayer", url: "/prepayee", icon: FaChartLine },
   {
     title: "Les services de l'entreprise",
