@@ -3,7 +3,7 @@ import React from "react";
 import {
   Table,
   TableBody,
-  TableCaption,
+  // TableCaption,
   TableCell,
   TableFooter,
   TableHead,
@@ -33,10 +33,10 @@ export default async function Page() {
               Telephone
             </TableHead>
             <TableHead className="p-4 text-left text-gray-600 font-semibold">
-              Numero D'bonnement
+              Numero D&apos;bonnement
             </TableHead>
             <TableHead className="p-4 text-left text-gray-600 font-semibold">
-              Fin D'abonnement
+              Fin D&apos;abonnement
             </TableHead>
             <TableHead className="p-4 text-left text-gray-600 font-semibold">
               Actions
@@ -80,7 +80,7 @@ export default async function Page() {
             </TableRow>
           ))}
         </TableBody>
-        {/* <TableFooter className="bg-gray-100 border-t">
+        <TableFooter className="bg-gray-100 border-t">
           <TableRow>
             <TableCell
               colSpan={4}
@@ -92,10 +92,10 @@ export default async function Page() {
               colSpan={2}
               className="p-4 text-right font-semibold text-gray-800"
             >
-              {totalMontant}
+              {/* {totalMontant} */}
             </TableCell>
           </TableRow>
-        </TableFooter> */}
+        </TableFooter>
       </Table>
 
       {/* formulaire de creation d'une caisse */}
@@ -154,7 +154,7 @@ export default async function Page() {
             htmlFor="montant_total"
             className="block text-gray-700 font-medium"
           >
-            Fin D'abonnement:
+            Fin D&apos;abonnement:
           </label>
           <input
             type="date"

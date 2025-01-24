@@ -3,7 +3,7 @@ import React from "react";
 import {
   Table,
   TableBody,
-  TableCaption,
+  // TableCaption,
   TableCell,
   TableFooter,
   TableHead,
@@ -19,10 +19,26 @@ export default async function Page() {
   const caisses = await prisma.caisse.findMany();
 
   // Calcul du total des montants
+  // const totalMontant = caisses.reduce(
+  //   (sum, caisse) => sum + (caisse.montant_total ?? 0),
+  //   0
+  // );
+  // CALCUL DE SOLDE  :
+
+  // const soldeAvecCaisse = caisses.map((caisse) => ({
+  //   ...caisse,
+  //   solde: caisse.montant - (caisse.depenses ?? 0),
+  // }));
+
   const totalMontant = caisses.reduce(
-    (sum, caisse) => sum + (caisse.montant_total ?? 0),
+    (sum, caisse) => sum + (caisse.montant ?? 0),
     0
   );
+  const totalDepenses = caisses.reduce(
+    (sum, caisse) => sum + (caisse.depenses ?? 0),
+    0
+  );
+  const totalSolde = totalMontant - totalDepenses;
 
   return (
     <div className="flex flex-col h-screen w-screen bg-gray-50 p-3">
@@ -37,6 +53,12 @@ export default async function Page() {
             </TableHead>
             <TableHead className="p-4 text-left text-gray-600 font-semibold">
               Stock Initial
+            </TableHead>
+            <TableHead className="p-4 text-left text-gray-600 font-semibold">
+              Depenses
+            </TableHead>
+            <TableHead className="p-4 text-left text-gray-600 font-semibold">
+              Fonts
             </TableHead>
             <TableHead className="p-4 text-left text-gray-600 font-semibold">
               Stock Final
@@ -69,12 +91,23 @@ export default async function Page() {
               </TableCell>
               <TableCell className="p-4 text-gray-700">
                 <Link href={`/caisse/${caisse.id}`} passHref>
+                  {caisse.depenses}
+                </Link>
+              </TableCell>
+              <TableCell className="p-4 text-gray-700">
+                <Link href={`/caisse/${caisse.id}`} passHref>
+                  {caisse.fonts}
+                </Link>
+              </TableCell>
+
+              <TableCell className="p-4 text-gray-700">
+                <Link href={`/caisse/${caisse.id}`} passHref>
                   {caisse.stock_final}
                 </Link>
               </TableCell>
               <TableCell className="p-4 text-gray-700">
                 <Link href={`/caisse/${caisse.id}`} passHref>
-                  {caisse.montant_total}
+                  {caisse.montant}
                 </Link>
               </TableCell>
               <TableCell className="p-4 text-gray-700">
@@ -89,13 +122,13 @@ export default async function Page() {
               colSpan={4}
               className="p-4 text-right text-gray-600 font-bold"
             >
-              Total
+              Solde
             </TableCell>
             <TableCell
               colSpan={2}
               className="p-4 text-right font-semibold text-gray-800"
             >
-              {totalMontant}
+              {totalSolde}
             </TableCell>
           </TableRow>
         </TableFooter>
@@ -155,15 +188,32 @@ export default async function Page() {
           />
         </div>
         <div>
-          <label
-            htmlFor="montant_total"
-            className="block text-gray-700 font-medium"
-          >
-            Montant Total:
+          <label htmlFor="depenses" className="block text-gray-700 font-medium">
+            Depenses:
           </label>
           <input
             type="number"
-            name="montant_total"
+            name="depenses"
+            className="mt-2 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <div>
+          <label htmlFor="fonts" className="block text-gray-700 font-medium">
+            Fonts:
+          </label>
+          <input
+            type="number"
+            name="fonts"
+            className="mt-2 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <div>
+          <label htmlFor="montant" className="block text-gray-700 font-medium">
+            Montant:
+          </label>
+          <input
+            type="number"
+            name="montant"
             className="mt-2 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>

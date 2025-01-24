@@ -111,8 +111,11 @@ model caisse {
   date          DateTime   @default(now())
   service       nomService
   stock_initial Int
-  stock_final   Int?
-  montant_total Int?
+  stock_final   Int
+  depenses      Int
+  fonts         Int
+  solde         Int?
+  montant       Int
 }
 
 model Profile {
